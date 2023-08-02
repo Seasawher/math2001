@@ -42,8 +42,7 @@ example {w : ℚ} (h1 : 3 * w + 1 = 4) : w = 1 :=
 -- Example 1.3.5
 example {x : ℤ} (h1 : 2 * x + 3 = x) : x = -3 :=
   calc
-    x = x + (x - x) := by ring
-    _ = x + (2 * x + 3 - x) := by rw [h1]
+    x = -3 := sorry
 
 -- Example 1.3.6
 example {x y : ℤ} (h1 : 2 * x - y = 4) (h2 : y - x + 1 = 2) : x = 5 :=
