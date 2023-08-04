@@ -62,23 +62,43 @@ example : ∃ a b c d : ℕ,
 
 
 example : ∃ t : ℚ, t ^ 2 = 1.69 := by
-  sorry
+  use 1.3
+  numbers
+
 example : ∃ m n : ℤ, m ^ 2 + n ^ 2 = 85 := by
-  sorry
+  use 6, 7
+  numbers
 
 example : ∃ x : ℝ, x < 0 ∧ x ^ 2 < 1 := by
-  sorry
+  use - 0.5
+  numbers
+  simp
+
 example : ∃ a b : ℕ, 2 ^ a = 5 * b + 1 := by
-  sorry
+  use 4, 3
+  numbers
 
 example (x : ℚ) : ∃ y : ℚ, y ^ 2 > x := by
-  sorry
+  use x + 1
+  numbers
 
 example {t : ℝ} (h : ∃ a : ℝ, a * t + 1 < a + t) : t ≠ 1 := by
   sorry
 
 example {m : ℤ} (h : ∃ a, 2 * a = m) : m ≠ 5 := by
-  sorry
+  obtain ⟨ a , ha ⟩ := h
+  have g := le_or_succ_le a 2
+  obtain g | g := g
+  · apply ne_of_lt
+    calc
+      m = 2 * a := by rw [ha]
+      _ ≤ 2 * 2 := by rel [g]
+      _ < 5 := by numbers
+  . apply ne_of_gt
+    calc
+      m = 2 * a := by rw [ha]
+      _ ≥ 2 * 3 := by rel [g]
+      _ > 5 := by numbers
 
 example {a b c : ℝ} (ha : a ≤ b + c) (hb : b ≤ a + c) (hc : c ≤ a + b)
     (ha' : 0 ≤ a) (hb' : 0 ≤ b) (hc' : 0 ≤ c) :
