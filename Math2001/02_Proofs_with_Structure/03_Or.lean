@@ -26,7 +26,11 @@ example {n : ℕ} : n ^ 2 ≠ 2 := by
   calc
     n ^ 2 ≤ 1 ^ 2 := by rel [hn]
     _ < 2 := by numbers
-  sorry
+  
+  apply ne_of_gt
+  calc
+    n ^ 2 ≥ 2 ^ 2 := by rel [hn]
+    _ > 2 := by numbers
 
 example {x : ℝ} (hx : 2 * x + 1 = 5) : x = 1 ∨ x = 2 := by
   right
@@ -42,7 +46,11 @@ example {x : ℝ} (hx : x ^ 2 - 3 * x + 2 = 0) : x = 1 ∨ x = 2 := by
     (x - 1) * (x - 2) = x ^ 2 - 3 * x + 2 := by ring
     _ = 0 := by rw [hx]
   have h2 := eq_zero_or_eq_zero_of_mul_eq_zero h1
-  sorry
+  obtain hl | hr := h2
+  left
+  addarith [hl]
+  right
+  addarith [hr]
 
 example {n : ℤ} : n ^ 2 ≠ 2 := by
   have hn0 := le_or_succ_le n 0
@@ -76,7 +84,13 @@ example {n : ℤ} : n ^ 2 ≠ 2 := by
 
 
 example {x : ℚ} (h : x = 4 ∨ x = -4) : x ^ 2 + 1 = 17 := by
-  sorry
+  obtain hl | hr := h
+  calc
+    x ^ 2 + 1 = 4 ^ 2 + 1 := by rw [hl]
+    _ = 17 := by ring
+  calc
+    x ^ 2 + 1 = (-4) ^ 2 + 1 := by rw [hr]
+    _ = 17 := by ring
 
 example {x : ℝ} (h : x = 1 ∨ x = 2) : x ^ 2 - 3 * x + 2 = 0 := by
   sorry
@@ -115,4 +129,15 @@ example {t : ℤ} : 5 * t ≠ 18 := by
   sorry
 
 example {m : ℕ} : m ^ 2 + 4 * m ≠ 46 := by
-  sorry
+  have hn := le_or_succ_le m 5
+  obtain hl | hr := hn
+
+  apply ne_of_lt
+  calc
+    m ^ 2 + 4 * m ≤ 5 ^ 2 + 4 * 5 := by rel [hl]
+    _ < 46 := by numbers
+  
+  apply ne_of_gt
+  calc
+    m ^ 2 + 4 * m ≥ 6 ^ 2 + 4 * 6 := by rel [hr]
+    _ > 46 := by numbers
