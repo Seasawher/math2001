@@ -86,7 +86,18 @@ example : ∃ x : ℝ, Tribalanced x ∧ ¬ Tribalanced (x + 1) := by
   sorry
 
 example (P Q : Prop) : (¬P → ¬Q) ↔ (Q → P) := by
-  sorry
+  constructor
+  · intro h₁ h₂ 
+    by_cases h: P
+    · exact h
+    · have := h₁ h
+      exfalso
+      contradiction
+  · intro h₁ h₂
+    by_cases h : Q
+    · have := h₁ h
+      contradiction
+    · exact h
 
 example : ∃ k : ℕ, Superpowered k ∧ ¬ Superpowered (k + 1) := by
   sorry
