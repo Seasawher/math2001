@@ -29,7 +29,12 @@ example : ¬ 3 ∣ 13 := by
     calc 13 = 3 * k := hk
       _ ≤ 3 * 4 := by rel [h4]
     numbers at h
-  · sorry
+  · have :=
+    calc
+      13 = 3 * k := by exact hk
+      _ ≥ 3 * 5 := by rel [h5]
+      _ = 15 := by numbers
+    contradiction
 
 example {x y : ℝ} (h : x + y = 0) : ¬(x > 0 ∧ y > 0) := by
   intro h
@@ -41,7 +46,21 @@ example {x y : ℝ} (h : x + y = 0) : ¬(x > 0 ∧ y > 0) := by
 
 
 example : ¬ (∃ n : ℕ, n ^ 2 = 2) := by
-  sorry
+  intro h
+  obtain ⟨ n, hn ⟩ := h
+  obtain g | g := le_or_succ_le n 1
+  · have :=
+    calc
+      2 = n ^ 2 := by rw [hn] 
+      _ ≤ 1 ^ 2 := by rel [g]
+      _ = 1 := by numbers
+    contradiction
+  · have :=
+    calc
+      2 = n ^ 2 := by rw [hn]
+      _ ≥ 2 ^ 2 := by rel [g]
+      _ = 4 := by numbers
+    contradiction
 
 example (n : ℤ) : Int.Even n ↔ ¬ Int.Odd n := by
   constructor
