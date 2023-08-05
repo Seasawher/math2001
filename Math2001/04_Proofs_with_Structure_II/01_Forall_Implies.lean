@@ -5,6 +5,7 @@ import Library.Theory.Prime
 import Library.Tactic.Numbers
 import Library.Tactic.Extra
 import Library.Tactic.Use
+import Library.Tactic.Addarith
 
 attribute [-instance] Int.instDivInt_1 Int.instDivInt EuclideanDomain.instDiv Nat.instDivNat
 
@@ -24,7 +25,17 @@ example {n : ℕ} (hn : ∀ m, n ∣ m) : n = 1 := by
 
 
 example {a b : ℝ} (h : ∀ x, x ≥ a ∨ x ≤ b) : a ≤ b := by
-  sorry
+  have hs : (a + b) / 2 ≥ a ∨ (a + b) / 2 ≤ b := by apply h
+  obtain hs | hs := hs
+  · calc
+      b = (a + b) - a := by ring
+      _ = ((a + b) / 2) * 2 - a := by ring
+      _ ≥ a * 2 - a := by rel [hs]
+      _ = a := by ring
+  · calc
+      a = ((a + b) / 2) * 2 - b := by ring
+      _ ≤ b * 2 - b := by rel [hs]
+      _ = b := by ring
 
 example {a b : ℝ} (ha1 : a ^ 2 ≤ 2) (hb1 : b ^ 2 ≤ 2) (ha2 : ∀ y, y ^ 2 ≤ 2 → y ≤ a)
     (hb2 : ∀ y, y ^ 2 ≤ 2 → y ≤ b) :
@@ -84,16 +95,52 @@ example : ¬ Prime 6 := by
 
 
 example {a : ℚ} (h : ∀ b : ℚ, a ≥ -3 + 4 * b - b ^ 2) : a ≥ 1 :=
-  sorry
+  calc
+    a ≥ -3 + 4 * 2 - 2 ^ 2 := by apply h
+    _ = 1 := by ring
 
 example {n : ℤ} (hn : ∀ m, 1 ≤ m → m ≤ 5 → m ∣ n) : 15 ∣ n := by
-  sorry
+  have h3 : 3 ∣ n := by
+    apply hn
+    · numbers
+    · numbers
+  obtain ⟨ a, ha ⟩ := h3
+
+  have h5 : 5 ∣ n := by
+    apply hn
+    · numbers
+    · numbers
+  obtain ⟨ b, hb ⟩ := h5
+  
+  have g :=
+    calc
+      n = 6 * n - 5 * n := by ring
+      _ = 6 * n - 5 * (3 * a) := by rw [ha]
+      _ = 6 * (5 * b) - 5 * (3 * a) := by rw [hb]
+      _ = 15 * (2 * b - a) := by ring
+  use 2 * b - a
+  exact g
 
 example : ∃ n : ℕ, ∀ m : ℕ, n ≤ m := by
-  sorry
+  use 0
+  intro m
+  extra
 
 example : forall_sufficiently_large x : ℝ, x ^ 3 + 3 * x ≥ 7 * x ^ 2 + 12 := by
-  sorry
+  dsimp
+  use 7
+  intro x hx
+  have g :=
+    calc
+      x ^ 3 + 3 * x - (7 * x ^ 2 + 12) 
+        = x * x ^ 2 + 3 * x - (7 * x ^ 2 + 12) := by ring
+      _ ≥ 7 * x ^ 2 + 3 * 7 - (7 * x ^ 2 + 12) := by rel [hx]
+      _ = 21 - 12 := by ring
+      _ ≥ 0 := by numbers
+  addarith [g]
 
 example : ¬(Prime 45) := by
-  sorry
+  apply not_prime 5 9
+  · numbers
+  · numbers
+  · numbers
