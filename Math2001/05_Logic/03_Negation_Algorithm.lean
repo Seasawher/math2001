@@ -94,7 +94,23 @@ example (P Q : Prop) : ¬ (P → Q) ↔ (P ∧ ¬ Q) := by
     contradiction  
 
 example (P : α → Prop) : ¬ (∀ x, P x) ↔ ∃ x, ¬ P x := by
-  sorry
+  constructor
+  · intro h0
+    by_cases ∃ x, ¬ P x
+    · exact h
+    · exfalso
+      apply h0
+      intro x
+      by_cases hp : P x 
+      · exact hp
+      · exfalso
+        apply h
+        use x
+        exact hp
+  · intro h0 h1
+    obtain ⟨ x, nx ⟩ := h0
+    apply nx
+    apply h1 x
 
 example : (¬ ∀ a b : ℤ, a * b = 1 → a = 1 ∨ b = 1)
     ↔ ∃ a b : ℤ, a * b = 1 ∧ a ≠ 1 ∧ b ≠ 1 :=
