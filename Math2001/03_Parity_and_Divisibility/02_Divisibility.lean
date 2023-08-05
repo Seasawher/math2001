@@ -16,7 +16,9 @@ example : (11 : ℕ) ∣ 88 := by
 
 
 example : (-2 : ℤ) ∣ 6 := by
-  sorry
+  dsimp [(· ∣ ·)]
+  use - 3
+  numbers
 
 example {a b : ℤ} (hab : a ∣ b) : a ∣ b ^ 2 + 2 * b := by
   obtain ⟨k, hk⟩ := hab
@@ -61,10 +63,17 @@ example {a b : ℕ} (hab : a ∣ b) (hb : 0 < b) : 0 < a := by
 
 
 example (t : ℤ) : t ∣ 0 := by
-  sorry
+  dsimp [(· ∣ ·)]
+  use 0
+  ring
 
 example : ¬(3 : ℤ) ∣ -10 := by
-  sorry
+  dsimp [(· ∣ ·)]
+  apply Int.not_dvd_of_exists_lt_and_lt
+  use -4
+  constructor
+  · numbers
+  · numbers
 
 example {x y : ℤ} (h : x ∣ y) : x ∣ 3 * y - 4 * y ^ 2 := by
   sorry
@@ -82,7 +91,13 @@ example {p q r : ℤ} (hpq : p ^ 3 ∣ q) (hqr : q ^ 2 ∣ r) : p ^ 6 ∣ r := b
   sorry
 
 example : ∃ n : ℕ, 0 < n ∧ 9 ∣ 2 ^ n - 1 := by
-  sorry
+  use 6
+  constructor
+  · numbers
+  · numbers
+    dsimp [(· ∣ ·)]
+    use 7
+    numbers
 
 example : ∃ a b : ℤ, 0 < b ∧ b < a ∧ a - b ∣ a + b := by
   sorry
