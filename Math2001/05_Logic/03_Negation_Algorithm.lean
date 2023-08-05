@@ -64,10 +64,34 @@ example : ¬ (∃ n : ℕ, n ^ 2 = 2) := by
 
 
 example (P : Prop) : ¬ (¬ P) ↔ P := by
-  sorry
+  constructor
+  · intro h
+    by_cases g : P
+    · exact g
+    · exfalso
+      apply h
+      exact g
+  · intro h g
+    contradiction
 
 example (P Q : Prop) : ¬ (P → Q) ↔ (P ∧ ¬ Q) := by
-  sorry
+  constructor
+  · intro h
+    constructor
+    · by_cases g : P
+      · exact g
+      · exfalso
+        apply h
+        intro k
+        contradiction
+    · intro k
+      apply h
+      intro g
+      exact k
+  · intro h2 h3
+    obtain ⟨ p, nq ⟩ := h2
+    have := h3 p
+    contradiction  
 
 example (P : α → Prop) : ¬ (∀ x, P x) ↔ ∃ x, ¬ P x := by
   sorry
