@@ -38,10 +38,11 @@ example (n : ℕ) : Even n ∨ Odd n := by
     · right
       dsimp [Odd]
       use x
-      ring
+      rw [hx]
     · left
       dsimp [Even]
       use x + 1
+      rw [hx]
       ring
 
 example {a b d : ℤ} (h : a ≡ b [ZMOD d]) (n : ℕ) : a ^ n ≡ b ^ n [ZMOD d] := by
