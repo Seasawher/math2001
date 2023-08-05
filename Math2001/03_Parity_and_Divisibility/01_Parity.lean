@@ -32,7 +32,11 @@ example {n : ℤ} (hn : Odd n) : Odd (3 * n + 2) := by
 
 
 example {n : ℤ} (hn : Odd n) : Odd (7 * n - 4) := by
-  sorry
+  dsimp [Odd]
+  obtain ⟨m, hm⟩ := hn
+  use 7 * m + 1
+  rw [hm]
+  ring
 
 example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x + y + 1) := by
   obtain ⟨a, ha⟩ := hx
@@ -69,10 +73,14 @@ example (n : ℤ) : Even (n ^ 2 + n + 4) := by
 
 
 example : Odd (-9 : ℤ) := by
-  sorry
+  dsimp [Odd]
+  use -5
+  numbers
 
 example : Even (26 : ℤ) := by
-  sorry
+  dsimp [Even]
+  use 13
+  ring
 
 example {m n : ℤ} (hm : Odd m) (hn : Even n) : Odd (n + m) := by
   sorry
@@ -105,6 +113,29 @@ example (n : ℤ) : Odd (3 * n ^ 2 + 3 * n - 1) := by
   sorry
 
 example (n : ℤ) : ∃ m ≥ n, Odd m := by
-  sorry
+  obtain hn | hn := Int.even_or_odd n
+  · obtain ⟨x, hx⟩ := hn
+    use 2 * x + 1
+    constructor
+    · rw [hx]
+      have h3 : (2 * x + 1) - 2 * x ≥ 0 :=
+      calc
+        (2 * x + 1) - 2 * x = 1 := by ring
+        _ ≥ 0 := by numbers
+      addarith [h3]
+    use x
+    ring
+  · obtain ⟨x, hx⟩ := hn
+    use n + 2
+    constructor
+    · have h3 : (n + 2) - n ≥ 0 :=
+      calc
+        (n + 2) - n = 2 := by ring
+        _ ≥ 0 := by numbers
+      addarith [h3]
+    use x + 1
+    rw [hx]
+    ring 
+
 example (a b c : ℤ) : Even (a - b) ∨ Even (a + c) ∨ Even (b - c) := by
   sorry
