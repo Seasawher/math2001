@@ -24,7 +24,25 @@ example : ∃! a : ℝ, 3 * a + 1 = 7 := by
 
 
 example : ∃! x : ℚ, ∀ a, a ≥ 1 → a ≤ 3 → (a - x) ^ 2 ≤ 1 := by
-  sorry
+  use 2
+  dsimp
+  constructor
+  · intro a la ga
+    have h : a - 2 ≥ -1 := by
+      calc
+        a - 2 ≥ 1 - 2 := by rel [la]
+        _ = -1 := by ring
+    have g : a - 2 ≤ 1 := by
+      calc
+        a - 2 ≤ 3 - 2 := by rel [ga]
+        _ = 1 := by ring
+    
+    have k := by apply sq_le_sq' h g
+    calc
+      (a - 2) ^ 2 ≤ 1 ^ 2 := by exact k
+      _ = 1 := by numbers    
+  · intro x h
+    sorry
 
 example {x : ℚ} (hx : ∃! a : ℚ, a ^ 2 = x) : x = 0 := by
   obtain ⟨a, ha1, ha2⟩ := hx
