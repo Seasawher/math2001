@@ -48,9 +48,22 @@ def x : ℕ → ℤ
 example (n : ℕ) : x n ≡ 1 [ZMOD 4] := by
   simple_induction n with k IH
   · -- base case
-    sorry
+    dsimp [Int.ModEq] at *
+    use 1
+    calc x 0 - 1 = 5 - 1 := by rw [x]
+      _ = 4 := by numbers
   · -- inductive step
-    sorry
+    dsimp [Int.ModEq] at *
+    obtain ⟨ m, hm ⟩ := IH
+    have hm : x k = 4 * m + 1 := by addarith [hm]
+    have :=
+      calc
+        x (k + 1) - 1 = 2 * x k - 1 - 1:= by rw [x]
+        _ = 2 * x k - 2 := by ring
+        _ = 2 * (4 * m + 1) - 2 := by rw [hm]
+        _ = 4 * (2 * m) := by ring
+    use 2 * m
+    exact this
 
 example (n : ℕ) : x n = 2 ^ (n + 2) + 1 := by
   simple_induction n with k IH
