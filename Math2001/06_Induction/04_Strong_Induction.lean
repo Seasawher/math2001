@@ -63,6 +63,40 @@ theorem exists_prime_factor {n : ℕ} (hn2 : 2 ≤ n) : ∃ p : ℕ, Prime p ∧
 
 /-! # Exercises -/
 
+lemma le_imp_not_gt (n : ℕ) : n ≤ 0 → ¬ n > 0 := by
+  exact fun a ↦ (fun {a b} ↦ Nat.not_lt.mpr) a
+
+lemma not_le_imp_gt (n : ℕ) : ¬ n ≤ 0 → n > 0 := by
+  exact fun a ↦ (fun {a b} ↦ Nat.not_le.mp) a
 
 theorem extract_pow_two (n : ℕ) (hn : 0 < n) : ∃ a x, Odd x ∧ n = 2 ^ a * x := by
-  sorry
+  have ph := even_or_odd n
+  obtain ph | ph := ph
+  · dsimp [Even] at ph
+    obtain ⟨ k, hk ⟩ := ph
+    have IH := extract_pow_two k
+    have hk2 : ¬ (k ≤ 0) := by
+      intro h
+      have h :=
+        calc
+          n = 2 * k := by rw [hk]
+          _ ≤ 2 * 0 := by rel [h]
+          _ = 0 := by numbers
+      have h2 := by exact le_imp_not_gt n h
+      contradiction
+    have h3 := by exact not_le_imp_gt k hk2
+    have h4 := by exact IH h3
+    obtain ⟨ a, x, hax ⟩ := h4
+    obtain ⟨ hx, ha ⟩ := hax
+    use a + 1
+    use x
+    constructor
+    · exact hx
+    · rw [hk]
+      rw [ha]
+      ring
+  · use 0, n
+    constructor
+    · exact ph
+    · ring
+  
