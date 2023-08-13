@@ -112,7 +112,19 @@ example (a b : ℤ) (h : 0 < b) : ∃ r : ℤ, 0 ≤ r ∧ r < b ∧ a ≡ r [ZM
 
 
 theorem lt_fmod_of_neg (n : ℤ) {d : ℤ} (hd : d < 0) : d < fmod n d := by
-  sorry
+  rw [fmod]
+  split_ifs with h1 h2 h3
+  · have IH := lt_fmod_of_neg (n + d) hd
+    exact IH
+  · have IH := lt_fmod_of_neg (n - d) hd
+    exact IH
+  · apply hd
+  · have h4 : 0 ≥ d * (n - d) := by addarith [h2]
+    have h5 : 0 ≤ n - d := by exact nonneg_of_mul_nonpos_right h4 hd
+    have h6 : d ≤ n := by addarith [h5]
+    exact Ne.lt_of_le' h3 h6
+termination_by _ n d hd => 2 * n - d
+  
 
 def T (n : ℤ) : ℤ :=
   if 0 < n then
