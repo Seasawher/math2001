@@ -73,15 +73,29 @@ theorem gcd_dvd (a b : ℤ) : gcd a b ∣ b ∧ gcd a b ∣ a := by
     obtain ⟨IH_right, IH_left⟩ := IH
     constructor
     · -- prove that `gcd a b ∣ b`
-      sorry 
+      exact IH_left
     · -- prove that `gcd a b ∣ a`
-      sorry
+      have p := fmod_add_fdiv a b
+      dsimp [(· ∣ ·)] at IH_right
+      dsimp [(· ∣ ·)] at IH_left
+      obtain ⟨ c1, IH_right ⟩ := IH_right
+      obtain ⟨ c2, IH_left ⟩ := IH_left
+      set r := fmod a b
+      have :=
+        calc
+          a = r + b * fdiv a b := by rw [p]
+          _ = gcd b r * c1 + b * fdiv a b := by addarith [IH_right]
+          _ = gcd b r * c1 + gcd b r * c2 * fdiv a b := by exact congrArg (HAdd.hAdd (gcd b r * c1)) (congrFun (congrArg HMul.hMul IH_left) (fdiv a b))
+          _ = gcd b r * ( c1 + c2 * fdiv a b ) := by ring
+      dsimp [(· ∣ ·)]
+      use c1 + c2 * fdiv a b
+      exact this
   · -- case `b < 0`
     have IH : _ ∧ _ := gcd_dvd b (fmod a (-b)) -- inductive hypothesis
     obtain ⟨IH_right, IH_left⟩ := IH
     constructor
     · -- prove that `gcd a b ∣ b`
-      sorry 
+      exact IH_left
     · -- prove that `gcd a b ∣ a`
       sorry
   · -- case `b = 0`, `0 ≤ a`
